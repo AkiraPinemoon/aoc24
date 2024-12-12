@@ -179,7 +179,7 @@ impl Region {
 
         let mut sides = 0;
 
-        for x in min_x..=max_x + 1 {
+        for x in min_x..=max_x {
             let mut on_border = false;
             for y in min_y..=max_y {
                 if self.positions.contains(&(x, y))
@@ -213,7 +213,7 @@ impl Region {
             }
         }
 
-        for y in min_y..=max_y + 1 {
+        for y in min_y..=max_y {
             let mut on_border = false;
             for x in min_x..=max_x {
                 if self.positions.contains(&(x, y))
