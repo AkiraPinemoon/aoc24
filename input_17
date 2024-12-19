@@ -26,3 +26,18 @@ b xor 5
 c = a >> b
 b xor 6
 b xor c
+
+
+
+
+
+
+
+
+a = a >> 3
+b = (((a % 8) ^ 5) xor 6) xor ((a >> 3) >> ((a % 8) ^ 5))
+repeat if a not 0
+
+
+
+(((a % 8) ^ 5) ^ 6) ^ (a >> ((a % 8) ^ 5))

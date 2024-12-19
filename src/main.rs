@@ -19,5 +19,5 @@ mod day_18;
 mod day_19;
 
 fn main() {
-    day_16::part_two();
+    day_17::part_two();
 }

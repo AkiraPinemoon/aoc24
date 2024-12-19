@@ -48,28 +48,6 @@ pub fn part_two() {
     let mut contents = String::new();
     file.read_to_string(&mut contents).unwrap();
 
-    let registers = contents
-        .lines()
-        .take(3)
-        .map(|line| line.split_whitespace().skip(2).next().unwrap())
-        .map(|val| val.parse().unwrap())
-        .collect_vec();
-
-    let memory: Vec<Instruction> = contents
-        .lines()
-        .skip(4)
-        .next()
-        .unwrap()
-        .split_whitespace()
-        .skip(1)
-        .next()
-        .unwrap()
-        .split(',')
-        .filter_map(|ch| ch.parse::<u8>().ok())
-        .tuples()
-        .filter_map(|instruction_data: (u8, u8)| instruction_data.try_into().ok())
-        .collect_vec();
-
     let rom = contents
         .lines()
         .skip(4)
@@ -83,28 +61,36 @@ pub fn part_two() {
         .filter_map(|ch| ch.parse::<u8>().ok())
         .collect_vec();
 
-    let mut res = 1 << 45;
+    let res = find_input(&rom, 0);
+    println!("{:#?}", res);
+}
 
-    loop {
-        println!("{}", res);
-
-        let mut machine = Machine {
-            a: res,
-            b: registers[1],
-            c: registers[2],
-            memory: memory.clone(),
-            ip: 0,
-            out: Vec::new(),
-        };
-
-        machine.run();
-
-        if machine.out == rom {
-            break;
-        }
-
-        res += 1;
+fn find_input(rom: &Vec<u8>, a: i64) -> Option<i64> {
+    if rom.is_empty() {
+        return Some(a >> 3);
     }
+
+    for i in 0..8 {
+        if let Some(res) = sim_prog(a + i).first() {
+            if rom.last() == Some(res) {
+                let mut copy = rom.clone();
+                copy.pop();
+                if let Some(inp) = find_input(&copy, (a + i) << 3) {
+                    return Some(inp);
+                }
+            }
+        }
+    }
+    None
+}
+
+fn sim_prog(mut a: i64) -> Vec<u8> {
+    let mut out = Vec::new();
+    while a > 0 {
+        out.push(((((a % 8) ^ 5) ^ 6) ^ (a >> ((a % 8) ^ 5))) as u8 % 8);
+        a = a >> 3;
+    }
+    out
 }
 
 struct Machine {
